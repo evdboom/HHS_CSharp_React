@@ -16,7 +16,7 @@ namespace HHS_CSharp_React.Controllers
             _weatherForecastService = weatherForecastService;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
+        [HttpGet("", Name = "GetWeatherForecast")]
         public async Task<IEnumerable<WeatherForecast>> Get()
         {
             _logger.LogInformation("Got forecasting request, source: {0}", Request.Host.Host);
@@ -25,7 +25,7 @@ namespace HHS_CSharp_React.Controllers
                 .ConfigureAwait(continueOnCapturedContext: true);
         }
 
-        [HttpGet(Name = "GetFromDataBase")]
+        [HttpGet("database", Name = "GetFromDataBase")]
         public async Task<IEnumerable<WeatherForecast>> GetFromDatabase()
         {
             _logger.LogInformation("Got forecasting request from database, source: {0}", Request.Host.Host);
@@ -34,8 +34,8 @@ namespace HHS_CSharp_React.Controllers
                 .ConfigureAwait(continueOnCapturedContext: true);
         }
 
-        [HttpPost(Name = "GetWithTemperature")]
-        public async Task<IEnumerable<WeatherForecast>> GetFromDatabase([FromBody] ForecastSearchRequest request)
+        [HttpPost("database/search", Name = "GetWithTemperature")]        
+        public async Task<IEnumerable<WeatherForecast>> SearchDatabase([FromBody] ForecastSearchRequest request)
         {
             _logger.LogInformation("Got forecasting request from database with minimum degrees, source: {0}", Request.Host.Host);
             return await _weatherForecastService

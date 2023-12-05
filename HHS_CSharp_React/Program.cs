@@ -12,7 +12,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services
-    .AddScoped<IWeatherForecastService, WeatherForecastService>();
+    .AddScoped<IWeatherForecastService, WeatherForecastService>()
+    .AddSingleton<ITimeService, TimeService>();
 builder.Services
     .AddDbContext<DataContext>(config =>
     {

@@ -11,24 +11,20 @@ namespace HHS_CSharp_React.Services
             "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
         ];
         private readonly DataContext _context;
+        private readonly ITimeService _timeService;
 
-        public WeatherForecastService(DataContext context)
+        public WeatherForecastService(DataContext context, ITimeService timeService)
         {
             _context = context;
-
-            // Code to make sure inmemory database has values)
-            if (!_context.WeatherForecasts.Any())
-            {
-                _context.WeatherForecasts.AddRange(Get().GetAwaiter().GetResult());
-                _context.SaveChanges();
-            }
+            _timeService = timeService;
         }
 
         public Task<IEnumerable<WeatherForecast>> Get()
         {
+            InitTestData();
             return Task.FromResult(Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                Date = DateOnly.FromDateTime(_timeService.Now.AddDays(index)),
                 TemperatureC = Random.Shared.Next(-20, 55),
                 Summary = Summaries[Random.Shared.Next(Summaries.Length)]
             }));
@@ -36,15 +32,28 @@ namespace HHS_CSharp_React.Services
 
         public async Task<IEnumerable<WeatherForecast>> GetFromDatabase()
         {
+            InitTestData();
             return await _context.WeatherForecasts
                 .ToListAsync();
         }
 
         public async Task<IEnumerable<WeatherForecast>> GetWithMinimumTemperature(int minumumDegrees)
         {
+            InitTestData();
             return await _context.WeatherForecasts
                 .Where(forecast => forecast.TemperatureC >= minumumDegrees)
                 .ToListAsync();
+        }
+
+        // Code to make sure inmemory database has values, no place in a reallife scenario
+        private void InitTestData()
+        {
+            
+            if (!_context.WeatherForecasts.Any())
+            {
+                _context.WeatherForecasts.AddRange(Get().GetAwaiter().GetResult());
+                _context.SaveChanges();
+            }
         }
     }
 }
