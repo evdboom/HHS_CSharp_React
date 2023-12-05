@@ -1,6 +1,6 @@
 ﻿namespace HHS_CSharp_React_Tests.ServicesTests
 {
-    public class WeatherForecastServiceTests
+    public class WeatherForecastServiceTests : IDisposable
     {
         private readonly Mock<ITimeService> _timeService;
         private DataContext _context;
@@ -91,6 +91,26 @@
         {
             _context = ContextHelper.CreateContext(_dbName);
             _weatherForecastService = new WeatherForecastService(_context, _timeService.Object);
+        }
+
+        private bool _disposed;
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                Dispose(true);
+                _disposed = true;
+                GC.SuppressFinalize(this);
+            }
+        }
+
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _context.Dispose();
+            }
+
         }
     }
 }
