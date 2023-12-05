@@ -1,0 +1,6 @@
+@HHS_CSharp_React_HostAddress = http://localhost:5204
+
+GET {{HHS_CSharp_React_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
