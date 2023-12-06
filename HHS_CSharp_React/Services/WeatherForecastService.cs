@@ -33,15 +33,18 @@ namespace HHS_CSharp_React.Services
         public async Task<IEnumerable<WeatherForecast>> GetFromDatabase()
         {
             InitTestData();
+            // SELECT * FROM WeatherForecasts --(not actual *, EF will specify which columns to get)
             return await _context.WeatherForecasts
                 .ToListAsync();
+            
         }
 
-        public async Task<IEnumerable<WeatherForecast>> GetWithMinimumTemperature(int minumumDegrees)
+        public async Task<IEnumerable<WeatherForecast>> GetWithMinimumTemperature(int minimumDegrees)
         {
             InitTestData();
+            // SELECT * FROM WeatherForecasts WHERE TemperatureC >= @minimumDegrees --(not actual *, EF will specify which columns to get)
             return await _context.WeatherForecasts
-                .Where(forecast => forecast.TemperatureC >= minumumDegrees)
+                .Where(forecast => forecast.TemperatureC >= minimumDegrees)
                 .ToListAsync();
         }
 
