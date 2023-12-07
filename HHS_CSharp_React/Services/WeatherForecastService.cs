@@ -21,7 +21,6 @@ namespace HHS_CSharp_React.Services
 
         public Task<IEnumerable<WeatherForecast>> Get()
         {
-            InitTestData();
             return Task.FromResult(Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(_timeService.Now.AddDays(index)),
@@ -34,7 +33,7 @@ namespace HHS_CSharp_React.Services
         {
             InitTestData();
             // SELECT * FROM WeatherForecasts --(not actual *, EF will specify which columns to get)
-            return await _context.WeatherForecasts
+            return await _context.WeatherForecasts                
                 .ToListAsync();
             
         }
@@ -42,7 +41,7 @@ namespace HHS_CSharp_React.Services
         public async Task<IEnumerable<WeatherForecast>> GetWithMinimumTemperature(int minimumDegrees)
         {
             InitTestData();
-            // SELECT * FROM WeatherForecasts WHERE TemperatureC >= @minimumDegrees --(not actual *, EF will specify which columns to get)
+            // SELECT * FROM WeatherForecasts WHERE TemperatureC >= @minimumDegrees --(not actual *, EF will specify which columns to get)           
             return await _context.WeatherForecasts
                 .Where(forecast => forecast.TemperatureC >= minimumDegrees)
                 .ToListAsync();

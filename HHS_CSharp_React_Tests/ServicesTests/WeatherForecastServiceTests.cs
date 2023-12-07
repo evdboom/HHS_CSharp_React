@@ -3,6 +3,7 @@
     public class WeatherForecastServiceTests : IDisposable
     {
         private readonly Mock<ITimeService> _timeService;
+        private readonly MockTimeService _mockedTimeService;
         private DataContext _context;
         private WeatherForecastService _weatherForecastService;
         private readonly string _dbName;
@@ -12,7 +13,18 @@
             _dbName = $"{Guid.NewGuid()}";
             _timeService = new Mock<ITimeService>();
             _context = ContextHelper.CreateContext(_dbName);
-            _weatherForecastService = new WeatherForecastService(_context, _timeService.Object);
+            _mockedTimeService = new();
+            _weatherForecastService = new WeatherForecastService(_context, _mockedTimeService);
+        }
+
+        [Fact]
+        public async Task GetsFromTodayPlusOne()
+        {
+            var today = new DateTime(2023, 12, 7);
+            _mockedTimeService.NowResult = today;
+            var list = await _weatherForecastService.Get();
+            var item = list.First();
+            Assert.Equal(today.AddDays(1), new DateTime(item.Date.Year, item.Date.Month, item.Date.Day));
         }
 
         [Fact]
@@ -38,6 +50,8 @@
             ]);
             _context.SaveChanges();
             RefreshContext();
+
+            _mockedTimeService.NowResult = new DateTime(2023, 7, 12);
 
             var result = await _weatherForecastService.GetWithMinimumTemperature(16);
             Assert.Collection(result, forecast =>
